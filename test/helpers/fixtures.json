@@ -1,0 +1,50 @@
+{
+  "context": {
+    "instances": [{
+      "domain": "digium.com"
+    }]
+  },
+  "contextConfig": {
+    "instances": [{
+      "key": "max_sec",
+      "value": "30"
+    }]
+  },
+  "mailbox": {
+    "instances": [{
+      "mailbox_number": "1234",
+      "mailbox_name": "Samuel Galarneau's Mailbox",
+      "name": "Samuel Galarneau",
+      "email": "sgalarneau@digium.com",
+      "password": "1234"
+    }]
+  },
+  "mailboxConfig": {
+    "instances": [{
+      "key": "max_sec",
+      "value": "20"
+    }]
+  },
+  "folder": {
+    "instances": [{
+      "name": "Inbox",
+      "recording": "INBOX",
+      "dtmf": 1
+    }]
+  },
+  "message": {
+    "instances": [{
+      "recording": "mymessage",
+      "read": false,
+      "date": "2014-01-01 10:00:00",
+      "caller_id": "John Smith",
+      "duration": "50"
+    }, {
+      "recording": "myothermessage",
+      "read": false,
+      "date": "2014-01-02 10:00:00",
+      "caller_id": "Jane Smith",
+      "duration": "60"
+    }]
+  }
+}
