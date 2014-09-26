@@ -1,11 +1,11 @@
 {
   "name": "voicemail-data",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "data access layer for asterisk voicemail",
   "main": "lib/db.js",
   "private": true,
   "scripts": {
-    "test": "mocha reporter --spec"
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
