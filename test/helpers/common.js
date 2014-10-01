@@ -17,11 +17,11 @@ var fs = require('fs');
 /**
  * Populates a test database with data from fixtures.
  *
- * @param {string} connectionString - connection string to the test database
+ * @param {object} dbConfig - database config
  * @returns {Q} promise - a promise that will return a test helper
  */
-function populateDb(connectionString) {
-  var file = connectionString.split('://')[1];
+function populateDb(dbConfig) {
+  var file = dbConfig.connectionString;
   var context;
   var mailbox;
   var folder;
@@ -30,7 +30,7 @@ function populateDb(connectionString) {
   // delete sqlite db
   return deleteDb(file)
     .then(function() {
-      dal = getDal(connectionString);
+      dal = getDal(dbConfig);
       var repos = [
         dal.context,
         dal.contextConfig,
@@ -106,8 +106,10 @@ function deleteDb(file) {
 
 /**
  * Returns a data access layer for the given connection string.
+ *
+ * @param {object} dbConfig - database config
  */
-function getDal(connectionString) {
+function getDal(dbConfig) {
   // force db modules to reload since we're deleting the db after each run
   var name = require.resolve('../../lib/providers/sqlite.js');
   delete require.cache[name];
@@ -115,7 +117,7 @@ function getDal(connectionString) {
   delete require.cache[name];
   var data = require('../../lib/db.js');
 
-  return data(connectionString);
+  return data(dbConfig);
 }
 
 /**

@@ -18,11 +18,14 @@ var common = require('./helpers/common.js');
 
 
 describe('mailbox config', function () {
-  var connectionString = 'sqlite://tests.db';
+  var config = {
+    connectionString: 'tests.db',
+    provider: 'sqlite'
+  };
   var helper;
 
   beforeEach(function (done) {
-    common.populateDb(connectionString)
+    common.populateDb(config)
       .then(function(testHelper) {
         helper = testHelper;
         done();

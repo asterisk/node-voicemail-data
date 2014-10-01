@@ -23,8 +23,11 @@ or add the following the your package.json file
 # Usage
 
 ```JavaScript
-var connectionString = '[postgres|sqlite]://...';
-var dal = require('voicemail-data')(connectionString);
+var config = {
+  connectionString: 'postgres://user:password@localhost/database',
+  provider: 'postgres' // postgres or sqlite
+};
+var dal = require('voicemail-data')(config);
 ```
 
 This will expose the following repositories:
