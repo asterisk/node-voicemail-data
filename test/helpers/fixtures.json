@@ -16,7 +16,17 @@
       "mailbox_name": "Samuel Galarneau's Mailbox",
       "name": "Samuel Galarneau",
       "email": "sgalarneau@digium.com",
-      "password": "1234"
+      "password": "1234",
+      "read": 1,
+      "unread": 1 
+    }, {
+      "mailbox_number": "1111",
+      "mailbox_name": "Samuel Galarneau's Mailbox",
+      "name": "Samuel Galarneau",
+      "email": "sgalarneau+1@digium.com",
+      "password": "5678",
+      "read": null,
+      "unread": null 
     }]
   },
   "mailboxConfig": {

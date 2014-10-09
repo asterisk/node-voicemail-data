@@ -161,6 +161,25 @@ function remove(mailbox) {
 }
 ```
 
+newMessage accepts a mailbox instance and a function to update MWI in Asterisk and updates the mailbox to have 1 more new message (unread). This method is thread safe.
+
+```JavaScript
+function(mailbox, mwi) {
+  // 1 will be added to latest count of unread messages and mwi will be called
+  // with the latest read/unread counts - mwi(read, unread);
+}
+```
+
+readMessage accepts a mailbox instance and a function to update MWI in Asterisk and updates the mailbox to have 1 more old message (read) and 1 less new message (unread). This method is thread safe.
+
+```JavaScript
+function(mailbox, mwi) {
+  // 1 will be added to latest count of read messages, 1 will be removed from
+  // the latest count of unread messages and mwi will be called with
+  // the latest read/unread counts - mwi(read, unread);
+}
+```
+
 createTable creates a mailbox table in the database:
 
 ```JavaScript

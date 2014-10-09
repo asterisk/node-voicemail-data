@@ -15,13 +15,19 @@
 
 var assert = require('assert');
 var common = require('./helpers/common.js');
+var Q = require('q');
 
 describe('mailbox', function () {
   var config = {
     connectionString: 'tests.db',
     provider: 'sqlite'
   };
+  var asyncDelay = 50;
   var helper;
+  var mwi = function() {
+    /*jshint newcap:false*/
+    return Q();
+  };
 
   beforeEach(function (done) {
     common.populateDb(config)
@@ -141,4 +147,121 @@ describe('mailbox', function () {
         done();
       });
   });
+
+  it('should support updating mwi through newMessage', function(done) {
+    var context = helper.context;
+    var number = '1234';
+
+    helper.dal.mailbox.get(number, context)
+      .then(function(mailbox) {
+        return helper.dal.mailbox.newMessage(mailbox, mwi);
+      })
+      .then(function(counts) {
+        assert(counts.read === 1);
+        assert(counts.unread === 2);
+        done();
+      })
+      .done();
+  });
+
+  it('should support updating mwi through readMessage', function(done) {
+    var context = helper.context;
+    var number = '1234';
+
+    helper.dal.mailbox.get(number, context)
+      .then(function(mailbox) {
+        return helper.dal.mailbox.readMessage(mailbox, mwi);
+      })
+      .then(function(counts) {
+        assert(counts.read === 2);
+        assert(counts.unread === 0);
+        done();
+      })
+      .done();
+  });
+
+  it('should support updating mwi for null read/unread', function(done) {
+    var context = helper.context;
+    var number = '1111';
+
+    helper.dal.mailbox.get(number, context)
+      .then(function(mailbox) {
+        return helper.dal.mailbox.newMessage(mailbox, mwi);
+      })
+      .then(function(counts) {
+        assert(counts.read === 0);
+        assert(counts.unread === 1);
+        done();
+      })
+      .done();
+  });
+
+  it('should support concurrent updates', function(done) {
+    var context = helper.context;
+    var number = '1234';
+    var results = [];
+
+    helper.dal.mailbox.get(number, context)
+      .then(function(mailbox) {
+        helper.dal.mailbox.newMessage(mailbox, mwi)
+          .then(function(counts) {
+            results.push(counts);
+          })
+          .done();
+        helper.dal.mailbox.readMessage(mailbox, mwi)
+          .then(function(counts) {
+            results.push(counts);
+          })
+          .done();
+
+        checkSuccess();
+
+        function checkSuccess() {
+          setTimeout(function() {
+            var last = results[results.length - 1];
+            if (last.read === 2 && last.unread === 1) {
+              done();
+            } else {
+              checkSuccess();
+            }
+          }, asyncDelay);
+        }
+      })
+      .done();
+  });
+
+  it('should support concurrent updates in opposite order', function(done) {
+    var context = helper.context;
+    var number = '1234';
+    var results = [];
+
+    helper.dal.mailbox.get(number, context)
+      .then(function(mailbox) {
+        helper.dal.mailbox.readMessage(mailbox, mwi)
+          .then(function(counts) {
+            results.push(counts);
+          })
+          .done();
+        helper.dal.mailbox.newMessage(mailbox, mwi)
+          .then(function(counts) {
+            results.push(counts);
+          })
+          .done();
+
+        checkSuccess();
+
+        function checkSuccess() {
+          setTimeout(function() {
+            var last = results[results.length - 1];
+            if (last.read === 2 && last.unread === 1) {
+              done();
+            } else {
+              checkSuccess();
+            }
+          }, asyncDelay);
+        }
+      })
+      .done();
+  });
+
 });

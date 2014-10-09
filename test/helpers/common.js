@@ -171,7 +171,9 @@ function createMailboxData(repo, context) {
       mailboxName: fixture['mailbox_name'],
       name: fixture.name,
       email: fixture.email,
-      password: fixture.password
+      password: fixture.password,
+      read: fixture.read,
+      unread: fixture.unread
     });
 
     return instance;
