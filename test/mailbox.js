@@ -264,4 +264,30 @@ describe('mailbox', function () {
       .done();
   });
 
+  it('should not allow saving mwi counts outside of new API', function(done) {
+    var context = helper.context;
+    var number = '1234';
+
+    return helper.dal.mailbox.get(number, context)
+      .then(function(instance) {
+        instance.read = 2;
+        instance.unread = 2;
+        instance.email = 'somethingelse@email.com';
+
+        return helper.dal.mailbox.save(instance);
+      })
+      .then(function() {
+        return helper.dal.mailbox.get(number, context);
+      })
+      .then(function(instance) {
+        assert(instance.mailboxNumber === number);
+        assert(instance.read === 1);
+        assert(instance.unread === 1);
+        assert(instance.email === 'somethingelse@email.com');
+      })
+      .done(function() {
+        done();
+      });
+  });
+
 });
