@@ -16,7 +16,6 @@
 var assert = require('assert');
 var common = require('./helpers/common.js');
 
-
 describe('message', function () {
   var config = {
     connectionString: 'tests.db',
@@ -79,24 +78,24 @@ describe('message', function () {
 
     helper.dal.message.all(mailbox, folder)
       .then(function(messages) {
-        var message = messages.next();
+        var message = messages[0];
 
-        assert(message.getId());
-        assert(message.getMailbox().mailboxNumber === mailbox.mailboxNumber);
-        assert(message.getFolder().dtmf === folder.dtmf);
-        assert(message.recording === 'myothermessage');
-        assert(message.read === false);
-        assert(message.callerId === 'Jane Smith');
-        assert(message.duration === '60');
-
-        message = messages.next();
         assert(message.getId());
         assert(message.getMailbox().mailboxNumber === mailbox.mailboxNumber);
         assert(message.getFolder().dtmf === folder.dtmf);
         assert(message.recording === 'mymessage');
-        assert(!message.read);
+        assert(message.read === false);
         assert(message.callerId === 'John Smith');
         assert(message.duration === '50');
+
+        message = messages[1];
+        assert(message.getId());
+        assert(message.getMailbox().mailboxNumber === mailbox.mailboxNumber);
+        assert(message.getFolder().dtmf === folder.dtmf);
+        assert(message.recording === 'myothermessage');
+        assert(!message.read);
+        assert(message.callerId === 'Jane Smith');
+        assert(message.duration === '60');
       })
       .done(function() {
         done();
@@ -118,14 +117,14 @@ describe('message', function () {
       .then(function(messages) {
         return helper.dal.message.save(instance)
           .then(function() {
-            return messages.latest;
+            return messages[messages.length - 1].date;
           });
       })
       .then(function(latest) {
         return helper.dal.message.latest(mailbox, folder, latest);
       })
       .then(function(messages) {
-        var message = messages[0];
+        var message = messages[1];
 
         // latest is returned to ensure message save at same second is not
         // skipped
@@ -159,7 +158,7 @@ describe('message', function () {
         return helper.dal.message.all(mailbox, folder);
       })
       .then(function(messages) {
-        var message = messages.next();
+        var message = messages[2];
 
         assert(message.getId());
         assert(message.getMailbox().mailboxNumber === mailbox.mailboxNumber);
@@ -191,7 +190,8 @@ describe('message', function () {
         return helper.dal.message.all(mailbox, folder);
       })
       .then(function(messages) {
-        var message = messages.next();
+        var message = messages[0];
+
         messageId = message.getId();
         return helper.dal.message.remove(message);
       })
@@ -199,7 +199,7 @@ describe('message', function () {
         return helper.dal.message.all(mailbox, folder);
       })
       .then(function(messages) {
-        var message = messages.next();
+        var message = messages[0];
         assert(message.getId() !== messageId);
       })
       .done(function() {

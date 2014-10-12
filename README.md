@@ -291,7 +291,7 @@ function create(mailbox, folder, fields) {
 }
 ```
 
-all accepts a mailbox instance and a folder instance and returns all existing message instances for that mailbox and folder as an object with methods for interacting with the messages:
+all accepts a mailbox instance and a folder instance and returns all existing message instances for that mailbox and folder:
 
 ```JavaScript
 function all(mailbox, folder) {
@@ -331,34 +331,6 @@ createIndexes creates indexes for the message table in the database:
 ```JavaScript
 function createIndexes() {
 }
-```
-
-### Message Collection
-
-The collection object returned by the all method on the message repository exposes the following properties:
-
-```JavaScript
-messages.latest; // moment object representing the date of the latest message
-messages.countNew;
-messages.countOld;
-```
-
-and the following methods:
-
-```JavaScript
-messages.previousExists();
-messages.currentExists();
-messages.isEmpty();
-messages.isNotEmpty();
-messages.next();
-messages.current();
-messages.previous();
-messages.first();
-messages.getMessage(playback); // playback object from ARI
-messages.markAsRead(message);
-messages.add(messageArray);
-messages.sort();
-messages.remove(message);
 ```
 
 # Development
