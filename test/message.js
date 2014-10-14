@@ -102,6 +102,30 @@ describe('message', function () {
       });
   });
   
+  it('should support get', function(done) {
+    var mailbox = helper.mailbox;
+    var folder = helper.folder;
+
+    helper.dal.message.all(mailbox, folder)
+      .then(function(messages) {
+        var message = messages[0];
+
+        return helper.dal.message.get(message);
+      })
+      .then(function(message) {
+        assert(message.getId());
+        assert(message.getMailbox().mailboxNumber === mailbox.mailboxNumber);
+        assert(message.getFolder().dtmf === folder.dtmf);
+        assert(message.recording === 'mymessage');
+        assert(message.read === false);
+        assert(message.callerId === 'John Smith');
+        assert(message.duration === '50');
+      })
+      .done(function() {
+        done();
+      });
+  });
+
   it('should support latest', function(done) {
     var mailbox = helper.mailbox;
     var folder = helper.folder;
