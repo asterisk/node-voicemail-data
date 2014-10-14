@@ -22,6 +22,7 @@ describe('message', function () {
     provider: 'sqlite'
   };
   var helper;
+  var asyncDelay = 100;
 
   beforeEach(function (done) {
     common.populateDb(config)
@@ -72,6 +73,106 @@ describe('message', function () {
     done();
   });
 
+  it('should support marking as read', function(done) {
+    var mailbox = helper.mailbox;
+    var folder = helper.folder;
+
+    helper.dal.message.all(mailbox, folder)
+      .then(function(messages) {
+        var message = messages[0];
+
+        assert(message.read === false);
+
+        return helper.dal.message.markAsRead(message)
+          .then(function(updated) {
+            assert(updated);
+
+            return helper.dal.message.get(message);
+          })
+          .then(function(message) {
+            assert(message.read === true);
+          })
+          .done(function() {
+            done();
+          });
+      })
+      .done();
+  });
+
+  it('should support concurrent marking as read', function(done) {
+    var mailbox = helper.mailbox;
+    var folder = helper.folder;
+    var results = [];
+
+    helper.dal.message.all(mailbox, folder)
+      .then(function(messages) {
+        var message = messages[0];
+
+        assert(message.read === false);
+
+        helper.dal.message.markAsRead(message)
+          .then(function(updated) {
+            results.push(updated);
+
+            return helper.dal.message.get(message);
+          })
+          .then(function(message) {
+            assert(message.read === true);
+          })
+          .done();
+        helper.dal.message.markAsRead(message)
+          .then(function(updated) {
+            results.push(updated);
+
+            return helper.dal.message.get(message);
+          })
+          .then(function(message) {
+            assert(message.read === true);
+          })
+          .done();
+      })
+      .done();
+
+      checkSuccess();
+
+      function checkSuccess() {
+        setTimeout(function() {
+          if ((results[0] === true && results[1]) === false ||
+              (results[0] === false && results[1] === true)) {
+            done();
+          } else {
+            checkSuccess();
+          }
+        }, asyncDelay);
+      }
+  });
+
+  it('should support marking as read when already read', function(done) {
+    var mailbox = helper.mailbox;
+    var folder = helper.folder;
+
+    helper.dal.message.all(mailbox, folder)
+      .then(function(messages) {
+        var message = messages[1];
+
+        assert(message.read === true);
+
+        return helper.dal.message.markAsRead(message)
+          .then(function(updated) {
+            assert(!updated);
+
+            return helper.dal.message.get(message);
+          })
+          .then(function(message) {
+            assert(message.read === true);
+          })
+          .done(function() {
+            done();
+          });
+      })
+      .done();
+  });
+
   it('should support all', function(done) {
     var mailbox = helper.mailbox;
     var folder = helper.folder;
@@ -84,7 +185,7 @@ describe('message', function () {
         assert(message.getMailbox().mailboxNumber === mailbox.mailboxNumber);
         assert(message.getFolder().dtmf === folder.dtmf);
         assert(message.recording === 'mymessage');
-        assert(message.read === false);
+        assert(!message.read);
         assert(message.callerId === 'John Smith');
         assert(message.duration === '50');
 
@@ -93,7 +194,7 @@ describe('message', function () {
         assert(message.getMailbox().mailboxNumber === mailbox.mailboxNumber);
         assert(message.getFolder().dtmf === folder.dtmf);
         assert(message.recording === 'myothermessage');
-        assert(!message.read);
+        assert(message.read);
         assert(message.callerId === 'Jane Smith');
         assert(message.duration === '60');
       })

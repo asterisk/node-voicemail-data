@@ -51,7 +51,7 @@
       "duration": "50"
     }, {
       "recording": "myothermessage",
-      "read": false,
+      "read": true,
       "date": "2014-01-02 10:00:00",
       "caller_id": "Jane Smith",
       "duration": "60"
