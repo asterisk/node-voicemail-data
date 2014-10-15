@@ -180,6 +180,33 @@ describe('mailbox', function () {
       .done();
   });
 
+  it('should support updating mwi through deletedMessage', function(done) {
+    var context = helper.context;
+    var number = '1234';
+    var mailbox;
+    var read = true;
+
+    helper.dal.mailbox.get(number, context)
+      .then(function(mailboxInstance) {
+        mailbox = mailboxInstance;
+        return helper.dal.mailbox.deletedMessage(mailbox, read, mwi);
+      })
+      .then(function(counts) {
+        assert(counts.read === 0);
+        assert(counts.unread === 1);
+
+        read = false;
+        return helper.dal.mailbox.deletedMessage(mailbox, read, mwi);
+      })
+      .then(function(counts) {
+        assert(counts.read === 0);
+        assert(counts.unread === 0);
+
+        done();
+      })
+      .done();
+  });
+
   it('should support updating mwi for null read/unread', function(done) {
     var context = helper.context;
     var number = '1111';
