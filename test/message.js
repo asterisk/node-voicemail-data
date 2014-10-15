@@ -130,21 +130,21 @@ describe('message', function () {
             assert(message.read === true);
           })
           .done();
+
+        checkSuccess();
+
+        function checkSuccess() {
+          setTimeout(function() {
+            if ((results[0] === true && results[1]) === false ||
+                (results[0] === false && results[1] === true)) {
+              done();
+            } else {
+              checkSuccess();
+            }
+          }, asyncDelay);
+        }
       })
       .done();
-
-      checkSuccess();
-
-      function checkSuccess() {
-        setTimeout(function() {
-          if ((results[0] === true && results[1]) === false ||
-              (results[0] === false && results[1] === true)) {
-            done();
-          } else {
-            checkSuccess();
-          }
-        }, asyncDelay);
-      }
   });
 
   it('should support marking as read when already read', function(done) {
@@ -330,6 +330,43 @@ describe('message', function () {
       .done(function() {
         done();
       });
+  });
+
+  it('should support concurrent removes', function(done) {
+    var mailbox = helper.mailbox;
+    var folder = helper.folder;
+    var results = [];
+
+    helper.dal.message.all(mailbox, folder)
+      .then(function(messages) {
+
+        helper.dal.message.remove(messages[0])
+          .then(function(instance) {
+            results.push(instance);
+          })
+          .done();
+        helper.dal.message.remove(messages[0])
+          .then(function(instance) {
+            results.push(instance);
+          })
+          .done();
+
+        checkSuccess();
+
+        function checkSuccess() {
+          setTimeout(function() {
+            var count = results.length;
+
+            if ((count === 2 && results[0] && results[1] === undefined) || 
+                (count === 2 && results[1] === undefined && results[1])) {
+              done();
+            } else {
+              checkSuccess();
+            }
+          }, asyncDelay);
+        }
+      })
+      .done();
   });
 
   it('should support creating indexes', function(done) {
