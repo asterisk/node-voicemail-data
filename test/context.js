@@ -47,10 +47,9 @@ describe('context', function () {
       .then(function(context) {
         assert(context.getId());
         assert(context.domain === domain);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support save', function(done) {
@@ -64,10 +63,9 @@ describe('context', function () {
       .then(function(newContext) {
         assert(newContext.getId());
         assert(newContext.domain === domain);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support remove', function(done) {
@@ -86,10 +84,9 @@ describe('context', function () {
       })
       .then(function(result) {
         assert(result === null);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support creating indexes', function(done) {
@@ -100,8 +97,6 @@ describe('context', function () {
       .catch(function(err) {
         var alreadyExists = ~err.toString().search(/index.+already exists/);
         assert(alreadyExists);
-      })
-      .done(function() {
         done();
       });
   });

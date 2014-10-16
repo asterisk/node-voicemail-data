@@ -71,8 +71,6 @@ describe('mailbox', function () {
         assert(mailbox.password === '1234');
         assert(mailbox.name === 'Samuel Galarneau');
         assert(mailbox.email === 'sgalarneau@digium.com');
-      })
-      .done(function() {
         done();
       });
   });
@@ -99,10 +97,9 @@ describe('mailbox', function () {
         assert(newMailbox.password === 'pass');
         assert(newMailbox.name === 'Samuel Galarneau');
         assert(newMailbox.email === 'sam@email.com');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support remove', function(done) {
@@ -128,10 +125,9 @@ describe('mailbox', function () {
       })
       .then(function(result) {
         assert(result === null);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support creating indexes', function(done) {
@@ -311,10 +307,9 @@ describe('mailbox', function () {
         assert(instance.read === 1);
         assert(instance.unread === 1);
         assert(instance.email === 'somethingelse@email.com');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
 });

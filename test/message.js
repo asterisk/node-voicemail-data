@@ -35,7 +35,7 @@ describe('message', function () {
 
   it('should support create', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     var instance = helper.dal.message.create(mailbox, folder, {
       recording: 'awesome-message.wav',
@@ -56,7 +56,7 @@ describe('message', function () {
 
   it('should support setting to read', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     var instance = helper.dal.message.create(mailbox, folder, {
       recording: 'awesome-message.wav',
@@ -75,7 +75,7 @@ describe('message', function () {
 
   it('should support marking as read', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     helper.dal.message.all(mailbox, folder)
       .then(function(messages) {
@@ -91,8 +91,6 @@ describe('message', function () {
           })
           .then(function(message) {
             assert(message.read === true);
-          })
-          .done(function() {
             done();
           });
       })
@@ -101,7 +99,7 @@ describe('message', function () {
 
   it('should support concurrent marking as read', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
     var results = [];
 
     helper.dal.message.all(mailbox, folder)
@@ -149,7 +147,7 @@ describe('message', function () {
 
   it('should support marking as read when already read', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     helper.dal.message.all(mailbox, folder)
       .then(function(messages) {
@@ -165,8 +163,6 @@ describe('message', function () {
           })
           .then(function(message) {
             assert(message.read === true);
-          })
-          .done(function() {
             done();
           });
       })
@@ -175,7 +171,7 @@ describe('message', function () {
 
   it('should support all', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     helper.dal.message.all(mailbox, folder)
       .then(function(messages) {
@@ -197,15 +193,14 @@ describe('message', function () {
         assert(message.read);
         assert(message.callerId === 'Jane Smith');
         assert(message.duration === '60');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
   
   it('should support get', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     helper.dal.message.all(mailbox, folder)
       .then(function(messages) {
@@ -221,15 +216,14 @@ describe('message', function () {
         assert(message.read === false);
         assert(message.callerId === 'John Smith');
         assert(message.duration === '50');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support latest', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     var instance = helper.dal.message.create(mailbox, folder, {
       recording: 'awesome-message.wav',
@@ -261,15 +255,14 @@ describe('message', function () {
         assert(message.recording === 'awesome-message.wav');
         assert(message.callerId === 'John Smith');
         assert(message.duration === '10');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support save', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     var instance = helper.dal.message.create(mailbox, folder, {
       recording: 'awesome-message.wav',
@@ -292,15 +285,35 @@ describe('message', function () {
         assert(message.recording === 'awesome-message.wav');
         assert(message.callerId === 'John Smith');
         assert(message.duration === '10');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
+  });
+
+  it('should support changing folder', function(done) {
+    var mailbox = helper.mailbox;
+    var folder = helper.folders['0'];
+    var oldFolder = helper.folders['1'];
+    var message;
+
+    helper.dal.message.all(mailbox, folder)
+      .then(function(messages) {
+        message = messages[0];
+
+        assert(message.getFolder().dtmf === folder.dtmf);
+
+        return helper.dal.message.changeFolder(message, oldFolder);
+      })
+      .then(function(message) {
+        assert(message.getFolder().dtmf === oldFolder.dtmf);
+        done();
+      })
+      .done();
   });
 
   it('should support remove', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
 
     var instance = helper.dal.message.create(mailbox, folder, {
       recording: 'awesome-message.wav',
@@ -326,15 +339,14 @@ describe('message', function () {
       .then(function(messages) {
         var message = messages[0];
         assert(message.getId() !== messageId);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support concurrent removes', function(done) {
     var mailbox = helper.mailbox;
-    var folder = helper.folder;
+    var folder = helper.folders['0'];
     var results = [];
 
     helper.dal.message.all(mailbox, folder)
@@ -377,8 +389,6 @@ describe('message', function () {
       .catch(function(err) {
         var alreadyExists = ~err.toString().search(/index.+already exists/);
         assert(alreadyExists);
-      })
-      .done(function() {
         done();
       });
   });

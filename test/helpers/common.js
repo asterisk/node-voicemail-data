@@ -24,7 +24,7 @@ function populateDb(dbConfig) {
   var file = dbConfig.connectionString;
   var context;
   var mailbox;
-  var folder;
+  var folders = [];
   var dal;
 
   // delete sqlite db
@@ -75,16 +75,16 @@ function populateDb(dbConfig) {
     .then(function() {
       return dal.folder.all();
     })
-    .then(function(folders) {
-      folder = folders['1'];
-      return createMessageData(dal.message, mailbox, folder);
+    .then(function(instances) {
+      folders = instances;
+      return createMessageData(dal.message, mailbox, folders['0']);
     })
     .then(function() {
       return {
         dal: dal,
         mailbox: mailbox,
         context: context,
-        folder: folder
+        folders: folders
       };
     });
 }

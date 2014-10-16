@@ -59,10 +59,9 @@ describe('context config', function () {
         assert(contextConfig.getContext().domain === context.domain);
         assert(contextConfig.key === 'max_sec');
         assert(contextConfig.value === '30');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support save', function(done) {
@@ -84,10 +83,9 @@ describe('context config', function () {
         assert(contextConfig.getContext().domain === context.domain);
         assert(contextConfig.key === 'max_silence');
         assert(contextConfig.value === '5');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support remove', function(done) {
@@ -111,10 +109,9 @@ describe('context config', function () {
       })
       .then(function(result) {
         assert(result.length === 1);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support creating indexes', function(done) {
@@ -125,9 +122,8 @@ describe('context config', function () {
       .catch(function(err) {
         var alreadyExists = ~err.toString().search(/index.+already exists/);
         assert(alreadyExists);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 });

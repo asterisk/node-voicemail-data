@@ -39,7 +39,11 @@
     "instances": [{
       "name": "Inbox",
       "recording": "INBOX",
-      "dtmf": 1
+      "dtmf": "0"
+    }, {
+      "name": "Old",
+      "recording": "Old",
+      "dtmf": "1"
     }]
   },
   "message": {

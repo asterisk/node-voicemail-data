@@ -49,16 +49,15 @@ describe('folder', function () {
   it('should support all', function(done) {
     helper.dal.folder.all()
       .then(function(folders) {
-        var folder = folders['1'];
+        var folder = folders['0'];
 
         assert(folder.getId());
         assert(folder.name === 'Inbox');
         assert(folder.recording === 'INBOX');
-        assert(folder.dtmf === 1);
-      })
-      .done(function() {
+        assert(folder.dtmf === 0);
         done();
-      });
+      })
+      .done();
   });
 
   it('should support save', function(done) {
@@ -79,10 +78,9 @@ describe('folder', function () {
         assert(folder.name === 'my-awesome-folder');
         assert(folder.recording === 'it-is-so-awesome.wav');
         assert(folder.dtmf === 2);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support remove', function(done) {
@@ -108,10 +106,9 @@ describe('folder', function () {
         var folder = folders['2'];
 
         assert(folder === undefined);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support creating indexes', function(done) {
@@ -122,8 +119,6 @@ describe('folder', function () {
       .catch(function(err) {
         var alreadyExists = ~err.toString().search(/index.+already exists/);
         assert(alreadyExists);
-      })
-      .done(function() {
         done();
       });
   });

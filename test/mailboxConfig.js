@@ -60,10 +60,9 @@ describe('mailbox config', function () {
           mailboxConfig.getMailbox().mailboxNumber === mailbox.mailboxNumber);
         assert(mailboxConfig.key === 'max_sec');
         assert(mailboxConfig.value === '20');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support save', function(done) {
@@ -86,10 +85,9 @@ describe('mailbox config', function () {
           mailboxConfig.getMailbox().mailboxNumber === mailbox.mailboxNumber);
         assert(mailboxConfig.key === 'max_silence');
         assert(mailboxConfig.value === '5');
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support remove', function(done) {
@@ -113,10 +111,9 @@ describe('mailbox config', function () {
       })
       .then(function(result) {
         assert(result.length === 1);
-      })
-      .done(function() {
         done();
-      });
+      })
+      .done();
   });
 
   it('should support creating indexes', function(done) {
@@ -127,8 +124,6 @@ describe('mailbox config', function () {
       .catch(function(err) {
         var alreadyExists = ~err.toString().search(/index.+already exists/);
         assert(alreadyExists);
-      })
-      .done(function() {
         done();
       });
   });
