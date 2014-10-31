@@ -164,19 +164,26 @@ function remove(mailbox) {
 newMessage accepts a mailbox instance and a function to update MWI in Asterisk and updates the mailbox to have 1 more new message (unread). This method is thread safe.
 
 ```JavaScript
-function(mailbox, mwi) {
+function newMessage(mailbox, mwi) {
   // 1 will be added to latest count of unread messages and mwi will be called
   // with the latest read/unread counts - mwi(read, unread);
 }
 ```
 
-readMessage accepts a mailbox instance and a function to update MWI in Asterisk and updates the mailbox to have 1 more old message (read) and 1 less new message (unread). This method is thread safe.
+readMessage accepts a mailbox instance and a function to update MWI in Asterisk and updates the mailbox to have 1 more old message (read) and 1 less new message (unread). This method is thread safe:
 
 ```JavaScript
-function(mailbox, mwi) {
+function readMessage(mailbox, mwi) {
   // 1 will be added to latest count of read messages, 1 will be removed from
   // the latest count of unread messages and mwi will be called with
   // the latest read/unread counts - mwi(read, unread);
+}
+```
+
+deletedMessage accepts a mailbox instance, a boolean determining whether the message had been read at the time of deletion, and a function to update MWI in Asterisk and updates the mailbox read/unread counts accordingly. This method is thread safe:
+
+```JavaScript
+function deletedMessage(mailbox, messageRead, mwi) {
 }
 ```
 
@@ -298,6 +305,13 @@ function all(mailbox, folder) {
 }
 ```
 
+get accepts a message instance and returns that instance with all fields updated to their latest values from the database:
+
+```JavaScript
+function get(message) {
+}
+```
+
 latest accepts a mailbox instance, a folder instance, and a moment object representing the date of the latest message and returns all message instances that are more recent than that latest messsage for the mailbox and folder given:
 
 ```JavaScript
@@ -312,10 +326,24 @@ function save(message) {
 }
 ```
 
-remove accepts a message instance and deletes it from the database:
+remove accepts a message instance and deletes it from the database. This method is thread safe:
 
 ```JavaScript
 function remove(message) {
+}
+```
+
+changeFolder accepts a message instance and a folder instance and moves the message to that folder:
+
+```JavaScript
+function changeFolder(message, folder) {
+}
+```
+
+markAsRead accepts a message instance and updated the message to be marked as read. This method is thread safe:
+
+```JavaScript
+function markAsRead(message) {
 }
 ```
 
