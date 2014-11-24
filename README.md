@@ -27,7 +27,10 @@ var config = {
   connectionString: 'postgres://user:password@localhost/database',
   provider: 'postgres' // postgres or sqlite
 };
-var dal = require('voicemail-data')(config);
+var dependencies = {
+  logger: logger // voicemail logging
+};
+var dal = require('voicemail-data')(config, dependencies);
 ```
 
 This will expose the following repositories:

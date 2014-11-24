@@ -117,7 +117,21 @@ function getDal(dbConfig) {
   delete require.cache[name];
   var data = require('../../lib/db.js');
 
-  return data(dbConfig);
+  // mock logger
+  return data(dbConfig, {
+    logger: {
+      child: function() {
+        return {
+          trace: function() {},
+          debug: function() {},
+          info: function() {},
+          warn: function() {},
+          error: function() {},
+          fatal: function() {}
+        };
+      }
+    }
+  });
 }
 
 /**
