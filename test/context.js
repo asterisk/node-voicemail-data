@@ -89,6 +89,30 @@ describe('context', function () {
       .done();
   });
 
+/*
+  it('should support retrieving a list of contexts', function(done) {
+    var instance1 = helper.dal.context.create('asterisk.org');
+    var instance2 = helper.dal.context.create('digium.com');
+    var instance3 = helper.dal.context.create('domain.com');
+
+    helper.dal.context.save(instance1)
+      .then(function() {
+        return helper.dal.context.save(instance2);
+      })
+      .then(function() {
+        return helper.dal.context.save(instance3);
+      })
+      .then(function() {
+        return helper.dal.context.all();
+      })
+      .then(function(result) {
+        console.log(result);
+      })
+      .done();
+
+  });
+*/
+
   it('should support creating indexes', function(done) {
     helper.dal.context.createIndexes()
       .then(function() {
