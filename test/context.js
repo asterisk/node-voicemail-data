@@ -15,6 +15,7 @@
 
 var assert = require('assert');
 var common = require('./helpers/common.js');
+var Q = require('q');
 
 describe('context', function () {
   var config = {
@@ -87,6 +88,58 @@ describe('context', function () {
         done();
       })
       .done();
+  });
+
+  function saveInstanceArray(instanceArray) {
+    return helper.dal.context.save(instanceArray.pop())
+    .then(function() {
+      if (instanceArray.length > 0) {
+        return saveInstanceArray(instanceArray);
+      }
+    });
+  }
+
+  function resultEquivalentExpectations(result, expectedItems) {
+    if (result.length !== expectedItems.length) {
+      return false;
+    }
+
+    var x;
+    for (x in result) {
+      var domain = result[x].domain;
+      var index = expectedItems.indexOf(domain);
+      if (index <= -1) {
+        return false;
+      }
+      expectedItems.splice(index, 1);
+    }
+
+    if (expectedItems.length === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  it('should support retrieving a list of contexts', function(done) {
+    var items = ['asterisk.org', 'domain.com'];
+    var expectedItems = ['asterisk.org', 'domain.com', 'digium.com'];
+    var instances = [];
+    var x;
+
+    for (x in items) {
+      instances.push(helper.dal.context.create(items[x]));
+    }
+
+    saveInstanceArray(instances)
+    .then(function() {
+      return helper.dal.context.all();
+    })
+    .then(function(result) {
+      assert(resultEquivalentExpectations(result, expectedItems));
+      done();
+    })
+    .done();
   });
 
   it('should support creating indexes', function(done) {

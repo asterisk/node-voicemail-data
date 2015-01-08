@@ -111,6 +111,59 @@ describe('folder', function () {
       .done();
   });
 
+  it('should support getting a folder by name', function(done) {
+    helper.dal.folder.get('Old')
+      .then(function(result) {
+        assert(result.name === 'Old');
+        assert(result.recording === 'Old');
+        assert(result.dtmf === 1);
+        done();
+      });
+  });
+
+  function resultEquivalentExpectations(result, expectedItems) {
+    if (result.length !== expectedItems.length) {
+      return false;
+    }
+
+    var x;
+    for (x in result) {
+      var name = result[x].name;
+      var item;
+      var y;
+
+      for (y in expectedItems) {
+        if (expectedItems[y].name === name) {
+          item = expectedItems.splice(y, 1);
+          break;
+        }
+      }
+
+      if (!item || !item.length ||
+          item[0].recording !== result[x].recording ||
+          item[0].dtmf !== result[x].dtmf) {
+        return false;
+      }
+    }
+
+    if (expectedItems.length === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  it('should support finding folders by name/dtmf', function(done) {
+    var expectedItems = [{'name': 'Inbox', 'recording': 'INBOX', 'dtmf': 0},
+                         {'name': 'Old', 'recording': 'Old', 'dtmf': 1}];
+
+    helper.dal.folder.findByNameOrDTMF('Inbox', 1)
+      .then(function(result) {
+        assert(resultEquivalentExpectations(result, expectedItems));
+        done();
+      });
+  });
+
   it('should support creating indexes', function(done) {
     helper.dal.folder.createIndexes()
       .then(function() {
