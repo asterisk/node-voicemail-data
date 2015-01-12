@@ -22,7 +22,7 @@ describe('mailbox', function () {
     connectionString: 'tests.db',
     provider: 'sqlite'
   };
-  var asyncDelay = 150;
+  var asyncDelay = 200;
   var helper;
   var mwi = function() {
     /*jshint newcap:false*/
