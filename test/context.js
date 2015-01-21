@@ -104,15 +104,11 @@ describe('context', function () {
       return false;
     }
 
-    var x;
-    for (x in result) {
-      var domain = result[x].domain;
-      var index = expectedItems.indexOf(domain);
-      if (index <= -1) {
-        return false;
-      }
-      expectedItems.splice(index, 1);
-    }
+    result.forEach(function (item) {
+      expectedItems = expectedItems.filter(function (expectedItem) {
+        return expectedItem !== item.domain;
+      });
+    });
 
     if (expectedItems.length === 0) {
       return true;
@@ -125,11 +121,10 @@ describe('context', function () {
     var items = ['asterisk.org', 'domain.com'];
     var expectedItems = ['asterisk.org', 'domain.com', 'digium.com'];
     var instances = [];
-    var x;
 
-    for (x in items) {
-      instances.push(helper.dal.context.create(items[x]));
-    }
+    items.forEach(function (item) {
+      instances.push(helper.dal.context.create(item));
+    });
 
     saveInstanceArray(instances)
     .then(function() {

@@ -130,22 +130,21 @@ describe('mailbox', function () {
       .done();
   });
 
-  function verifyMailboxesMatchResults(result, expected) {
-    if (result.length !== expected.length) {
+  function verifyMailboxesMatchResults(result, expectedItems) {
+    if (result.length !== expectedItems.length) {
       return false;
     }
 
-    var x;
-    for (x in result) {
-      var number = result[x].mailboxNumber;
-      var index = expected.indexOf(number);
+    result.forEach(function (item) {
+      var index = expectedItems.indexOf(item.mailboxNumber);
       if (index <= -1) {
-        return false;
+        return;
       }
-      expected.splice(index, 1);
-    }
 
-    if (expected.length === 0) {
+      expectedItems.splice(index, 1);
+    });
+
+    if (expectedItems.length === 0) {
       return true;
     }
 

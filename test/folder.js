@@ -126,25 +126,17 @@ describe('folder', function () {
       return false;
     }
 
-    var x;
-    for (x in result) {
-      var name = result[x].name;
-      var item;
-      var y;
-
-      for (y in expectedItems) {
-        if (expectedItems[y].name === name) {
-          item = expectedItems.splice(y, 1);
-          break;
+    result.forEach(function (item) {
+      expectedItems = expectedItems.filter(function (expectedItem) {
+        if (expectedItem.name === item.name &&
+            expectedItem.recording === item.recording &&
+            expectedItem.dtmf === item.dtmf) {
+          return false;
         }
-      }
 
-      if (!item || !item.length ||
-          item[0].recording !== result[x].recording ||
-          item[0].dtmf !== result[x].dtmf) {
-        return false;
-      }
-    }
+        return true;
+      });
+    });
 
     if (expectedItems.length === 0) {
       return true;
