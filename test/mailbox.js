@@ -22,7 +22,7 @@ describe('mailbox', function () {
     connectionString: 'tests.db',
     provider: 'sqlite'
   };
-  var asyncDelay = 50;
+  var asyncDelay = 200;
   var helper;
   var mwi = function() {
     /*jshint newcap:false*/
@@ -125,6 +125,50 @@ describe('mailbox', function () {
       })
       .then(function(result) {
         assert(result === null);
+        done();
+      })
+      .done();
+  });
+
+  function verifyMailboxesMatchResults(result, expectedItems) {
+    if (result.length !== expectedItems.length) {
+      return false;
+    }
+
+    result.forEach(function (item) {
+      var index = expectedItems.indexOf(item.mailboxNumber);
+      if (index <= -1) {
+        return;
+      }
+
+      expectedItems.splice(index, 1);
+    });
+
+    if (expectedItems.length === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  it('should support finding mailboxes by context', function(done) {
+    var context = helper.context;
+    var expectedMailboxNumbers = [1234, 1111];
+
+    helper.dal.mailbox.findByContext(context)
+      .then(function(result) {
+        assert(verifyMailboxesMatchResults(result, expectedMailboxNumbers));
+        done();
+      })
+      .done();
+  });
+
+  it('should support counting mailboxes by context', function(done) {
+    var context = helper.context;
+
+    helper.dal.mailbox.countByContext(context)
+      .then(function(result) {
+        assert(result === 2);
         done();
       })
       .done();

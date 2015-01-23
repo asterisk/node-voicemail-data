@@ -22,7 +22,7 @@ describe('message', function () {
     provider: 'sqlite'
   };
   var helper;
-  var asyncDelay = 100;
+  var asyncDelay = 300;
 
   beforeEach(function (done) {
     common.populateDb(config)
@@ -391,5 +391,19 @@ describe('message', function () {
         assert(alreadyExists);
         done();
       });
+  });
+
+  it('should support removing all messages for a mailbox', function(done) {
+    var mailbox = helper.mailbox;
+
+    helper.dal.message.removeByMailbox(mailbox)
+      .then(function() {
+        return helper.dal.message.countByMailbox(mailbox);
+      })
+      .then(function(count) {
+        assert(count === 0);
+        done();
+      })
+      .done();
   });
 });
