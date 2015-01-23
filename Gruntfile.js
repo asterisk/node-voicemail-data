@@ -36,7 +36,7 @@ module.exports = function(grunt) {
         options: {
           mocha: require('mocha'),
           reporter: 'spec',
-          timeout: 2000
+          timeout: 6000
         },
         src: ['test/*.js']
       }
